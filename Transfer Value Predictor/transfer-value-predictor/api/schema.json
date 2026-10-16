@@ -1,0 +1,118 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Transfer Value Predictor API",
+  "definitions": {
+    "PlayerSeason": {
+      "type": "object",
+      "properties": {
+        "player_id": { "type": "integer", "description": "Transfermarkt player ID" },
+        "name": { "type": "string" },
+        "image_url": { "type": "string", "format": "uri", "description": "Portrait photo URL" },
+        "season": { "type": "integer" },
+        "position_group": { "type": "string", "enum": ["GK", "DEF", "MID", "FWD"] },
+        "age": { "type": "number", "description": "Age at end of season" },
+        "years_from_peak": { "type": "number", "description": "abs(age - 27)" },
+        "goals": { "type": "integer", "minimum": 0 },
+        "assists": { "type": "integer", "minimum": 0 },
+        "goals_per_90": { "type": "number", "minimum": 0 },
+        "assists_per_90": { "type": "number", "minimum": 0 },
+        "minutes_played": { "type": "integer", "minimum": 0 },
+        "minutes_share": { "type": "number", "minimum": 0, "maximum": 1 },
+        "market_value_eur": { "type": "number", "minimum": 0, "description": "Actual historical market value (label)" }
+      },
+      "required": [
+        "player_id", "name", "image_url", "season", "position_group",
+        "age", "years_from_peak", "goals", "assists", "goals_per_90",
+        "assists_per_90", "minutes_played", "minutes_share", "market_value_eur"
+      ]
+    },
+    "PlayerSeasonWithPrediction": {
+      "allOf": [
+        { "$ref": "#/definitions/PlayerSeason" },
+        {
+          "type": "object",
+          "properties": {
+            "predicted_value_eur": { "type": "number", "minimum": 0 }
+          },
+          "required": ["predicted_value_eur"]
+        }
+      ]
+    },
+    "PredictRequest": {
+      "type": "object",
+      "properties": {
+        "goals": { "type": "number", "minimum": 0 },
+        "assists": { "type": "number", "minimum": 0 },
+        "age": { "type": "number", "exclusiveMinimum": 0 },
+        "minutes_played": { "type": "number", "minimum": 0 },
+        "position_group": { "type": "string", "pattern": "^(GK|DEF|MID|FWD)$" },
+        "minutes_share": { "type": "number", "minimum": 0, "maximum": 1, "default": 1.0 }
+      },
+      "required": ["goals", "assists", "age", "minutes_played", "position_group"]
+    },
+    "PredictResponse": {
+      "type": "object",
+      "properties": {
+        "predicted_value_eur": { "type": "number", "minimum": 0 }
+      },
+      "required": ["predicted_value_eur"]
+    },
+    "HTTPValidationError": {
+      "type": "object",
+      "properties": {
+        "detail": { "type": "string", "description": "Human-readable error, e.g. 404 'No player found with name X'" }
+      }
+    },
+    "RefreshAccepted": {
+      "type": "object",
+      "properties": {
+        "status": { "type": "string", "enum": ["running"] }
+      },
+      "required": ["status"]
+    },
+    "RefreshStatus": {
+      "type": "object",
+      "properties": {
+        "status": { "type": "string", "enum": ["idle", "running", "done", "error"] },
+        "started_at": { "type": ["string", "null"], "format": "date-time" },
+        "finished_at": { "type": ["string", "null"], "format": "date-time" },
+        "error": { "type": ["string", "null"], "description": "Set only when status is 'error'" }
+      },
+      "required": ["status", "started_at", "finished_at", "error"]
+    }
+  },
+  "endpoints": {
+    "GET /players": {
+      "response": {
+        "200": { "type": "array", "items": { "$ref": "#/definitions/PlayerSeason" } }
+      }
+    },
+    "GET /players/{name}": {
+      "parameters": { "name": { "type": "string", "in": "path", "required": true } },
+      "response": {
+        "200": { "$ref": "#/definitions/PlayerSeasonWithPrediction" },
+        "404": { "$ref": "#/definitions/HTTPValidationError" }
+      }
+    },
+    "POST /predict": {
+      "requestBody": { "$ref": "#/definitions/PredictRequest" },
+      "response": {
+        "200": { "$ref": "#/definitions/PredictResponse" },
+        "422": { "$ref": "#/definitions/HTTPValidationError" }
+      }
+    },
+    "POST /refresh": {
+      "description": "Triggers a background re-download + re-wrangle + re-train. Call this from an 'Update data' button. Takes ~1-3 minutes; poll GET /refresh/status rather than waiting on this call.",
+      "response": {
+        "202": { "$ref": "#/definitions/RefreshAccepted" },
+        "409": { "$ref": "#/definitions/HTTPValidationError", "description": "A refresh is already in progress" }
+      }
+    },
+    "GET /refresh/status": {
+      "description": "Poll this after POST /refresh. When status becomes 'done', re-fetch GET /players to show the new data.",
+      "response": {
+        "200": { "$ref": "#/definitions/RefreshStatus" }
+      }
+    }
+  }
+}

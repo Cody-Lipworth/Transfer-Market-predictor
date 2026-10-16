@@ -1,0 +1,1704 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <script src="./support.js"></script>
+  </head>
+  <body>
+    <x-dc>
+      <helmet>
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Public+Sans:wght@400;500;600;700&display=swap"
+        />
+        <link rel="stylesheet" href="./styles.css" />
+      </helmet>
+      <div
+        style="
+          min-height: 100vh;
+          background: #0b0b0c;
+          color: #f2f1ee;
+          font-family: &quot;Public Sans&quot;, sans-serif;
+        "
+      >
+        <div
+          style="
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: #0e0e10;
+            border-bottom: 1px solid #26262a;
+          "
+        >
+          <div
+            style="
+              max-width: 1320px;
+              margin: 0 auto;
+              padding: 14px 24px;
+              display: flex;
+              align-items: center;
+              gap: 28px;
+              flex-wrap: wrap;
+            "
+          >
+            <div
+              onClick="{{ goToDirectory }}"
+              style="
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                cursor: pointer;
+              "
+            >
+              <div
+                style="
+                  width: 30px;
+                  height: 30px;
+                  border-radius: 7px;
+                  background: #ff6452;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                  font-family: Archivo, sans-serif;
+                  font-weight: 800;
+                  color: #0b0b0c;
+                  font-size: 16px;
+                "
+              >
+                T
+              </div>
+              <div
+                style="
+                  font-family: Archivo, sans-serif;
+                  font-weight: 700;
+                  font-size: 17px;
+                  letter-spacing: -0.01em;
+                "
+              >
+                Transfer Value Predictor
+              </div>
+            </div>
+            <div style="display: flex; gap: 6px">
+              <div
+                onClick="{{ goToDirectory }}"
+                style="padding:7px 14px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;color:{{ navDirectoryColor }};background:{{ navDirectoryBg }};"
+              >
+                Directory
+              </div>
+              <div
+                onClick="{{ goToPredict }}"
+                style="padding:7px 14px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;color:{{ navPredictColor }};background:{{ navPredictBg }};"
+              >
+                Predict
+              </div>
+            </div>
+            <div
+              style="
+                flex: 1;
+                min-width: 200px;
+                display: flex;
+                justify-content: flex-end;
+              "
+            >
+              <div
+                style="display: flex; gap: 8px; width: 100%; max-width: 320px"
+              >
+                <input
+                  value="{{ navSearchInput }}"
+                  onChange="{{ onNavSearchChange }}"
+                  onKeyDown="{{ onNavSearchKeyDown }}"
+                  placeholder="Search player name…"
+                  style="
+                    flex: 1;
+                    background: #17171a;
+                    border: 1px solid #2b2b30;
+                    border-radius: 6px;
+                    color: #f2f1ee;
+                    padding: 8px 12px;
+                    font-size: 14px;
+                    font-family: &quot;Public Sans&quot;, sans-serif;
+                    outline: none;
+                  "
+                />
+                <div
+                  onClick="{{ onNavSearchSubmit }}"
+                  style="
+                    background: #1e1e22;
+                    border: 1px solid #2b2b30;
+                    border-radius: 6px;
+                    padding: 8px 12px;
+                    cursor: pointer;
+                    font-size: 13px;
+                    font-weight: 600;
+                    color: #c9c9cd;
+                    white-space: nowrap;
+                  "
+                >
+                  Search
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <sc-if
+          value="{{ healthBannerVisible }}"
+          hint-placeholder-val="{{ false }}"
+        >
+          <div
+            style="
+              background: #3a1414;
+              border-bottom: 1px solid #5a2222;
+              color: #ff8a7a;
+              font-size: 13px;
+              padding: 10px 24px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              gap: 14px;
+              text-align: center;
+              flex-wrap: wrap;
+            "
+          >
+            <div>{{ healthBannerText }}</div>
+            <div
+              onClick="{{ retryHealth }}"
+              style="
+                background: #4a1a1a;
+                padding: 5px 12px;
+                border-radius: 5px;
+                cursor: pointer;
+                font-weight: 600;
+              "
+            >
+              Retry
+            </div>
+          </div>
+        </sc-if>
+
+        <div style="max-width: 1320px; margin: 0 auto; padding: 28px 24px 64px">
+          <sc-if value="{{ isDirectory }}" hint-placeholder-val="{{ true }}">
+            <div>
+              <div
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: flex-end;
+                  gap: 16px;
+                  flex-wrap: wrap;
+                  margin-bottom: 22px;
+                "
+              >
+                <div>
+                  <div
+                    style="
+                      font-family: Archivo, sans-serif;
+                      font-weight: 800;
+                      font-size: 28px;
+                      letter-spacing: -0.01em;
+                    "
+                  >
+                    Player Directory
+                  </div>
+                  <div style="color: #9d9da3; font-size: 14px; margin-top: 4px">
+                    {{ directoryCount }} players · {{ directorySeasonLabel }}
+                  </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 14px">
+                  <div style="font-size: 12px; color: #75757a">
+                    {{ directoryLastUpdatedText }}
+                  </div>
+                  <div
+                    onClick="{{ refreshDirectory }}"
+                    style="
+                      display: flex;
+                      align-items: center;
+                      gap: 7px;
+                      background: #17171a;
+                      border: 1px solid #2b2b30;
+                      border-radius: 6px;
+                      padding: 9px 14px;
+                      cursor: pointer;
+                      font-size: 13px;
+                      font-weight: 600;
+                    "
+                  >
+                    <sc-if
+                      value="{{ directoryRefreshing }}"
+                      hint-placeholder-val="{{ false }}"
+                    >
+                      <div
+                        class="tvp-spin"
+                        style="
+                          width: 13px;
+                          height: 13px;
+                          border: 2px solid #55555c;
+                          border-top-color: #ff6452;
+                          border-radius: 50%;
+                        "
+                      ></div>
+                    </sc-if>
+                    <sc-if
+                      value="{{ notDirectoryRefreshing }}"
+                      hint-placeholder-val="{{ true }}"
+                    >
+                      <div style="font-size: 13px; line-height: 1">⟳</div>
+                    </sc-if>
+                    <div>{{ directoryRefreshLabel }}</div>
+                  </div>
+                </div>
+              </div>
+
+              <div
+                style="
+                  display: flex;
+                  gap: 12px;
+                  flex-wrap: wrap;
+                  margin-bottom: 18px;
+                "
+              >
+                <select
+                  value="{{ directorySeason }}"
+                  onChange="{{ onDirectorySeasonChange }}"
+                  style="
+                    background: #17171a;
+                    border: 1px solid #2b2b30;
+                    border-radius: 6px;
+                    color: #f2f1ee;
+                    padding: 9px 12px;
+                    font-size: 14px;
+                    font-family: &quot;Public Sans&quot;, sans-serif;
+                    min-width: 140px;
+                  "
+                >
+                  <sc-for
+                    list="{{ seasonOptions }}"
+                    as="opt"
+                    hint-placeholder-count="5"
+                  >
+                    <option value="{{ opt.value }}">{{ opt.label }}</option>
+                  </sc-for>
+                </select>
+                <div
+                  style="
+                    display: flex;
+                    gap: 6px;
+                    background: #111113;
+                    border: 1px solid #2b2b30;
+                    border-radius: 6px;
+                    padding: 4px;
+                  "
+                >
+                  <sc-for
+                    list="{{ positionOptions }}"
+                    as="p"
+                    hint-placeholder-count="5"
+                  >
+                    <div
+                      onClick="{{ p.onClick }}"
+                      style="padding:6px 12px;border-radius:5px;font-size:13px;font-weight:600;cursor:pointer;color:{{ p.color }};background:{{ p.bg }};"
+                    >
+                      {{ p.label }}
+                    </div>
+                  </sc-for>
+                </div>
+                <div
+                  style="
+                    display: flex;
+                    gap: 8px;
+                    flex: 1;
+                    min-width: 220px;
+                    max-width: 360px;
+                  "
+                >
+                  <input
+                    value="{{ dirSearchInput }}"
+                    onChange="{{ onDirSearchChange }}"
+                    onKeyDown="{{ onDirSearchKeyDown }}"
+                    placeholder="Filter list by name…"
+                    style="
+                      flex: 1;
+                      background: #17171a;
+                      border: 1px solid #2b2b30;
+                      border-radius: 6px;
+                      color: #f2f1ee;
+                      padding: 9px 12px;
+                      font-size: 14px;
+                      font-family: &quot;Public Sans&quot;, sans-serif;
+                      outline: none;
+                    "
+                  />
+                  <sc-if
+                    value="{{ hasDirSearch }}"
+                    hint-placeholder-val="{{ false }}"
+                  >
+                    <div
+                      onClick="{{ clearDirSearch }}"
+                      style="
+                        background: #1e1e22;
+                        border: 1px solid #2b2b30;
+                        border-radius: 6px;
+                        padding: 9px 12px;
+                        cursor: pointer;
+                        font-size: 13px;
+                        color: #c9c9cd;
+                      "
+                    >
+                      Clear
+                    </div>
+                  </sc-if>
+                </div>
+              </div>
+
+              <sc-if
+                value="{{ directoryLoading }}"
+                hint-placeholder-val="{{ false }}"
+              >
+                <div style="display: flex; flex-direction: column; gap: 8px">
+                  <sc-for
+                    list="{{ skeletonRows }}"
+                    as="s"
+                    hint-placeholder-count="8"
+                  >
+                    <div
+                      class="tvp-skel"
+                      style="height: 52px; border-radius: 8px"
+                    ></div>
+                  </sc-for>
+                </div>
+              </sc-if>
+
+              <sc-if
+                value="{{ showDirectoryError }}"
+                hint-placeholder-val="{{ false }}"
+              >
+                <div
+                  style="
+                    text-align: center;
+                    padding: 80px 20px;
+                    border: 1px solid #4a2222;
+                    border-radius: 10px;
+                    background: #1a1213;
+                  "
+                >
+                  <div
+                    style="
+                      font-family: Archivo, sans-serif;
+                      font-weight: 700;
+                      font-size: 18px;
+                      margin-bottom: 8px;
+                      color: #ff8a7a;
+                    "
+                  >
+                    Couldn't load players
+                  </div>
+                  <div
+                    style="color: #c9c9cd; font-size: 14px; margin-bottom: 18px"
+                  >
+                    {{ directoryError }}
+                  </div>
+                  <div
+                    onClick="{{ retryDirectory }}"
+                    style="
+                      display: inline-block;
+                      background: #2a1a1a;
+                      color: #ff8a7a;
+                      font-weight: 600;
+                      font-size: 13px;
+                      padding: 9px 18px;
+                      border-radius: 6px;
+                      cursor: pointer;
+                    "
+                  >
+                    Retry
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if
+                value="{{ showDirectoryEmpty }}"
+                hint-placeholder-val="{{ false }}"
+              >
+                <div
+                  style="
+                    text-align: center;
+                    padding: 80px 20px;
+                    border: 1px solid #26262a;
+                    border-radius: 10px;
+                    background: #111113;
+                  "
+                >
+                  <div
+                    style="
+                      font-family: Archivo, sans-serif;
+                      font-weight: 700;
+                      font-size: 18px;
+                      margin-bottom: 8px;
+                    "
+                  >
+                    No data for this season
+                  </div>
+                  <div style="color: #9d9da3; font-size: 14px">
+                    {{ directorySeasonLabel }} hasn't been recorded yet. Try a
+                    past season.
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if
+                value="{{ showDirectoryNoMatch }}"
+                hint-placeholder-val="{{ false }}"
+              >
+                <div
+                  style="
+                    text-align: center;
+                    padding: 80px 20px;
+                    border: 1px solid #26262a;
+                    border-radius: 10px;
+                    background: #111113;
+                  "
+                >
+                  <div
+                    style="
+                      font-family: Archivo, sans-serif;
+                      font-weight: 700;
+                      font-size: 18px;
+                      margin-bottom: 8px;
+                    "
+                  >
+                    No players match your filters
+                  </div>
+                  <div style="color: #9d9da3; font-size: 14px">
+                    Try a different name, position, or season.
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if
+                value="{{ showDirectoryTable }}"
+                hint-placeholder-val="{{ false }}"
+              >
+                <div
+                  style="
+                    border: 1px solid #26262a;
+                    border-radius: 10px;
+                    overflow: hidden;
+                  "
+                >
+                  <sc-if
+                    value="{{ isMobile }}"
+                    hint-placeholder-val="{{ false }}"
+                  >
+                    <div
+                      style="
+                        display: flex;
+                        flex-direction: column;
+                        gap: 10px;
+                        padding: 10px;
+                      "
+                    >
+                      <sc-for
+                        list="{{ tableRows }}"
+                        as="row"
+                        hint-placeholder-count="8"
+                      >
+                        <div
+                          onClick="{{ row.onClick }}"
+                          style="
+                            background: #111113;
+                            border: 1px solid #26262a;
+                            border-radius: 8px;
+                            padding: 14px;
+                            cursor: pointer;
+                            display: flex;
+                            gap: 12px;
+                          "
+                        >
+                          <sc-if
+                            value="{{ row.hasImage }}"
+                            hint-placeholder-val="{{ false }}"
+                          >
+                            <img
+                              src="{{ row.image_url }}"
+                              onerror="{{ row.onImageError }}"
+                              style="
+                                width: 52px;
+                                height: 52px;
+                                border-radius: 8px;
+                                flex-shrink: 0;
+                                object-fit: cover;
+                                display: block;
+                              "
+                            />
+                          </sc-if>
+                          <sc-if
+                            value="{{ !row.hasImage }}"
+                            hint-placeholder-val="{{ true }}"
+                          >
+                            <div
+                              style="width:52px;height:52px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:{{ row.posColor }}22;color:{{ row.posColor }};font-family:Archivo,sans-serif;font-weight:700;font-size:16px;"
+                            >
+                              {{ row.initials }}
+                            </div>
+                          </sc-if>
+                          <div style="flex: 1; min-width: 0">
+                            <div
+                              style="
+                                display: flex;
+                                justify-content: space-between;
+                                gap: 8px;
+                              "
+                            >
+                              <div style="font-weight: 700; font-size: 15px">
+                                {{ row.name }}
+                              </div>
+                              <div
+                                style="
+                                  font-family: Archivo, sans-serif;
+                                  font-weight: 700;
+                                  font-size: 15px;
+                                  color: #ff6452;
+                                "
+                              >
+                                {{ row.valueFmt }}
+                              </div>
+                            </div>
+                            <div
+                              style="
+                                display: flex;
+                                gap: 6px;
+                                align-items: center;
+                                margin: 4px 0 8px;
+                              "
+                            >
+                              <div
+                                style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;color:{{ row.posColor }};background:{{ row.posColor }}22;"
+                              >
+                                {{ row.position_group }}
+                              </div>
+                              <div style="font-size: 12px; color: #9d9da3">
+                                Age {{ row.ageFmt }}
+                              </div>
+                            </div>
+                            <div
+                              style="
+                                display: grid;
+                                grid-template-columns: repeat(4, 1fr);
+                                gap: 6px;
+                                font-size: 12px;
+                                color: #c9c9cd;
+                              "
+                            >
+                              <div>G {{ row.goals }}</div>
+                              <div>A {{ row.assists }}</div>
+                              <div>{{ row.minutesFmt }}</div>
+                              <div>{{ row.minutesShareFmt }}</div>
+                            </div>
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+
+                  <sc-if
+                    value="{{ isDesktopTable }}"
+                    hint-placeholder-val="{{ true }}"
+                  >
+                    <div>
+                      <div
+                        style="display:grid;grid-template-columns:{{ colTemplate }};gap:0;background:#141416;border-bottom:1px solid #26262a;padding:10px 16px;font-size:12px;font-weight:700;color:#9d9da3;text-transform:uppercase;letter-spacing:0.03em;"
+                      >
+                        <sc-for
+                          list="{{ columns }}"
+                          as="col"
+                          hint-placeholder-count="11"
+                        >
+                          <div
+                            onClick="{{ col.onClick }}"
+                            style="cursor:pointer;display:flex;align-items:center;justify-content:{{ col.justify }};gap:4px;"
+                          >
+                            {{ col.label }}<span>{{ col.sortIndicator }}</span>
+                          </div>
+                        </sc-for>
+                      </div>
+                      <sc-for
+                        list="{{ tableRows }}"
+                        as="row"
+                        hint-placeholder-count="8"
+                      >
+                        <div
+                          onClick="{{ row.onClick }}"
+                          style="display:grid;grid-template-columns:{{ colTemplateVal }};gap:0;align-items:center;padding:9px 16px;border-bottom:1px solid #1d1d20;cursor:pointer;font-size:13.5px;background:{{ row.rowBg }};"
+                        >
+                          <sc-if
+                            value="{{ row.hasImage }}"
+                            hint-placeholder-val="{{ false }}"
+                          >
+                            <img
+                              src="{{ row.image_url }}"
+                              onerror="{{ row.onImageError }}"
+                              style="
+                                width: 34px;
+                                height: 34px;
+                                border-radius: 6px;
+                                object-fit: cover;
+                                display: block;
+                              "
+                            />
+                          </sc-if>
+                          <sc-if
+                            value="{{ !row.hasImage }}"
+                            hint-placeholder-val="{{ true }}"
+                          >
+                            <div
+                              style="width:34px;height:34px;border-radius:6px;display:flex;align-items:center;justify-content:center;background:{{ row.posColor }}22;color:{{ row.posColor }};font-family:Archivo,sans-serif;font-weight:700;font-size:12px;"
+                            >
+                              {{ row.initials }}
+                            </div>
+                          </sc-if>
+                          <div
+                            style="
+                              font-weight: 600;
+                              overflow: hidden;
+                              text-overflow: ellipsis;
+                              white-space: nowrap;
+                            "
+                          >
+                            {{ row.name }}
+                          </div>
+                          <div>
+                            <span
+                              style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;color:{{ row.posColor }};background:{{ row.posColor }}22;"
+                              >{{ row.position_group }}</span
+                            >
+                          </div>
+                          <div style="color: #c9c9cd; text-align: right">
+                            {{ row.ageFmt }}
+                          </div>
+                          <div style="color: #c9c9cd; text-align: right">
+                            {{ row.goals }}
+                          </div>
+                          <div style="color: #c9c9cd; text-align: right">
+                            {{ row.assists }}
+                          </div>
+                          <div style="color: #c9c9cd; text-align: right">
+                            {{ row.g90 }}
+                          </div>
+                          <div style="color: #c9c9cd; text-align: right">
+                            {{ row.a90 }}
+                          </div>
+                          <div style="color: #c9c9cd; text-align: right">
+                            {{ row.minutesFmt }}
+                          </div>
+                          <div style="color: #c9c9cd; text-align: right">
+                            {{ row.minutesShareFmt }}
+                          </div>
+                          <div
+                            style="
+                              font-family: Archivo, sans-serif;
+                              font-weight: 700;
+                              color: #ff6452;
+                              text-align: right;
+                            "
+                          >
+                            {{ row.valueFmt }}
+                          </div>
+                        </div>
+                      </sc-for>
+                    </div>
+                  </sc-if>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isDetail }}" hint-placeholder-val="{{ false }}">
+            <div>
+              <div
+                onClick="{{ goToDirectory }}"
+                style="
+                  color: #9d9da3;
+                  font-size: 13px;
+                  cursor: pointer;
+                  margin-bottom: 16px;
+                  display: inline-block;
+                "
+              >
+                &larr; Back to Directory
+              </div>
+
+              <sc-if
+                value="{{ detailLoading }}"
+                hint-placeholder-val="{{ false }}"
+              >
+                <div style="display: flex; flex-direction: column; gap: 16px">
+                  <div
+                    class="tvp-skel"
+                    style="height: 180px; border-radius: 12px"
+                  ></div>
+                  <div
+                    class="tvp-skel"
+                    style="height: 120px; border-radius: 12px"
+                  ></div>
+                </div>
+              </sc-if>
+
+              <sc-if
+                value="{{ showDetailError }}"
+                hint-placeholder-val="{{ false }}"
+              >
+                <div
+                  style="
+                    text-align: center;
+                    padding: 80px 20px;
+                    border: 1px solid #4a2222;
+                    border-radius: 10px;
+                    background: #1a1213;
+                  "
+                >
+                  <div
+                    style="
+                      font-family: Archivo, sans-serif;
+                      font-weight: 700;
+                      font-size: 18px;
+                      margin-bottom: 8px;
+                      color: #ff8a7a;
+                    "
+                  >
+                    Couldn't load this player
+                  </div>
+                  <div
+                    style="color: #c9c9cd; font-size: 14px; margin-bottom: 18px"
+                  >
+                    {{ detailError }}
+                  </div>
+                  <div
+                    onClick="{{ retryDetail }}"
+                    style="
+                      display: inline-block;
+                      background: #2a1a1a;
+                      color: #ff8a7a;
+                      font-weight: 600;
+                      font-size: 13px;
+                      padding: 9px 18px;
+                      border-radius: 6px;
+                      cursor: pointer;
+                    "
+                  >
+                    Retry
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if
+                value="{{ showDetailContent }}"
+                hint-placeholder-val="{{ false }}"
+              >
+                <div>
+                  <div
+                    style="
+                      display: flex;
+                      justify-content: space-between;
+                      align-items: flex-start;
+                      gap: 16px;
+                      flex-wrap: wrap;
+                      margin-bottom: 20px;
+                    "
+                  >
+                    <div
+                      style="
+                        display: flex;
+                        gap: 18px;
+                        flex-wrap: wrap;
+                        align-items: center;
+                      "
+                    >
+                      <sc-if
+                        value="{{ detail.hasImage }}"
+                        hint-placeholder-val="{{ false }}"
+                      >
+                        <img
+                          src="{{ detail.image_url }}"
+                          onerror="{{ detail.onImageError }}"
+                          style="
+                            width: 96px;
+                            height: 96px;
+                            border-radius: 14px;
+                            flex-shrink: 0;
+                            object-fit: cover;
+                            display: block;
+                          "
+                        />
+                      </sc-if>
+                      <sc-if
+                        value="{{ !detail.hasImage }}"
+                        hint-placeholder-val="{{ true }}"
+                      >
+                        <div
+                          style="width:96px;height:96px;border-radius:14px;flex-shrink:0;display:flex;align-items:center;justify-content:center;background:{{ detail.posColor }}22;color:{{ detail.posColor }};font-family:Archivo,sans-serif;font-weight:800;font-size:32px;"
+                        >
+                          {{ detail.initials }}
+                        </div>
+                      </sc-if>
+                      <div>
+                        <div
+                          style="
+                            font-family: Archivo, sans-serif;
+                            font-weight: 800;
+                            font-size: 26px;
+                            letter-spacing: -0.01em;
+                          "
+                        >
+                          {{ detail.name }}
+                        </div>
+                        <div
+                          style="
+                            display: flex;
+                            gap: 8px;
+                            align-items: center;
+                            margin-top: 8px;
+                            flex-wrap: wrap;
+                          "
+                        >
+                          <div
+                            style="font-size:12px;font-weight:700;padding:3px 10px;border-radius:999px;color:{{ detail.posColor }};background:{{ detail.posColor }}22;"
+                          >
+                            {{ detail.position_group }}
+                          </div>
+                          <div style="color: #9d9da3; font-size: 13px">
+                            Age {{ detail.ageFmt }}
+                          </div>
+                          <div style="color: #9d9da3; font-size: 13px">
+                            {{ detail.yearsFromPeakLabel }}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        align-items: center;
+                        gap: 14px;
+                        flex-wrap: wrap;
+                      "
+                    >
+                      <select
+                        value="{{ detailSeason }}"
+                        onChange="{{ onDetailSeasonChange }}"
+                        style="
+                          background: #17171a;
+                          border: 1px solid #2b2b30;
+                          border-radius: 6px;
+                          color: #f2f1ee;
+                          padding: 8px 12px;
+                          font-size: 14px;
+                          font-family: &quot;Public Sans&quot;, sans-serif;
+                        "
+                      >
+                        <sc-for
+                          list="{{ seasonOptions }}"
+                          as="opt"
+                          hint-placeholder-count="5"
+                        >
+                          <option value="{{ opt.value }}">
+                            {{ opt.label }}
+                          </option>
+                        </sc-for>
+                      </select>
+                      <div style="font-size: 12px; color: #75757a">
+                        {{ detailLastUpdatedText }}
+                      </div>
+                      <div
+                        onClick="{{ refreshDetail }}"
+                        style="
+                          display: flex;
+                          align-items: center;
+                          gap: 7px;
+                          background: #17171a;
+                          border: 1px solid #2b2b30;
+                          border-radius: 6px;
+                          padding: 8px 13px;
+                          cursor: pointer;
+                          font-size: 13px;
+                          font-weight: 600;
+                        "
+                      >
+                        <sc-if
+                          value="{{ detailRefreshing }}"
+                          hint-placeholder-val="{{ false }}"
+                        >
+                          <div
+                            class="tvp-spin"
+                            style="
+                              width: 12px;
+                              height: 12px;
+                              border: 2px solid #55555c;
+                              border-top-color: #ff6452;
+                              border-radius: 50%;
+                            "
+                          ></div>
+                        </sc-if>
+                        <div>{{ directoryRefreshLabel }}</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    style="
+                      display: grid;
+                      grid-template-columns: repeat(
+                        auto-fit,
+                        minmax(110px, 1fr)
+                      );
+                      gap: 10px;
+                      margin-bottom: 24px;
+                    "
+                  >
+                    <div
+                      style="
+                        background: #111113;
+                        border: 1px solid #26262a;
+                        border-radius: 10px;
+                        padding: 14px;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 11px;
+                          color: #9d9da3;
+                          text-transform: uppercase;
+                          letter-spacing: 0.04em;
+                        "
+                      >
+                        Goals
+                      </div>
+                      <div
+                        style="
+                          font-family: Archivo, sans-serif;
+                          font-weight: 700;
+                          font-size: 22px;
+                          margin-top: 4px;
+                        "
+                      >
+                        {{ detail.goals }}
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        background: #111113;
+                        border: 1px solid #26262a;
+                        border-radius: 10px;
+                        padding: 14px;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 11px;
+                          color: #9d9da3;
+                          text-transform: uppercase;
+                          letter-spacing: 0.04em;
+                        "
+                      >
+                        Assists
+                      </div>
+                      <div
+                        style="
+                          font-family: Archivo, sans-serif;
+                          font-weight: 700;
+                          font-size: 22px;
+                          margin-top: 4px;
+                        "
+                      >
+                        {{ detail.assists }}
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        background: #111113;
+                        border: 1px solid #26262a;
+                        border-radius: 10px;
+                        padding: 14px;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 11px;
+                          color: #9d9da3;
+                          text-transform: uppercase;
+                          letter-spacing: 0.04em;
+                        "
+                      >
+                        Goals /90
+                      </div>
+                      <div
+                        style="
+                          font-family: Archivo, sans-serif;
+                          font-weight: 700;
+                          font-size: 22px;
+                          margin-top: 4px;
+                        "
+                      >
+                        {{ detail.g90 }}
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        background: #111113;
+                        border: 1px solid #26262a;
+                        border-radius: 10px;
+                        padding: 14px;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 11px;
+                          color: #9d9da3;
+                          text-transform: uppercase;
+                          letter-spacing: 0.04em;
+                        "
+                      >
+                        Assists /90
+                      </div>
+                      <div
+                        style="
+                          font-family: Archivo, sans-serif;
+                          font-weight: 700;
+                          font-size: 22px;
+                          margin-top: 4px;
+                        "
+                      >
+                        {{ detail.a90 }}
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        background: #111113;
+                        border: 1px solid #26262a;
+                        border-radius: 10px;
+                        padding: 14px;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 11px;
+                          color: #9d9da3;
+                          text-transform: uppercase;
+                          letter-spacing: 0.04em;
+                        "
+                      >
+                        Minutes
+                      </div>
+                      <div
+                        style="
+                          font-family: Archivo, sans-serif;
+                          font-weight: 700;
+                          font-size: 22px;
+                          margin-top: 4px;
+                        "
+                      >
+                        {{ detail.minutesFmt }}
+                      </div>
+                    </div>
+                    <div
+                      style="
+                        background: #111113;
+                        border: 1px solid #26262a;
+                        border-radius: 10px;
+                        padding: 14px;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 11px;
+                          color: #9d9da3;
+                          text-transform: uppercase;
+                          letter-spacing: 0.04em;
+                        "
+                      >
+                        Minutes Share
+                      </div>
+                      <div
+                        style="
+                          font-family: Archivo, sans-serif;
+                          font-weight: 700;
+                          font-size: 22px;
+                          margin-top: 4px;
+                        "
+                      >
+                        {{ detail.minutesShareFmt }}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div
+                    style="
+                      background: #111113;
+                      border: 1px solid #26262a;
+                      border-radius: 12px;
+                      padding: 22px;
+                      margin-bottom: 24px;
+                    "
+                  >
+                    <div
+                      style="
+                        font-family: Archivo, sans-serif;
+                        font-weight: 700;
+                        font-size: 15px;
+                        margin-bottom: 16px;
+                      "
+                    >
+                      Market Value: Actual vs. Predicted
+                    </div>
+                    <div
+                      style="
+                        display: flex;
+                        gap: 32px;
+                        flex-wrap: wrap;
+                        margin-bottom: 18px;
+                      "
+                    >
+                      <div>
+                        <div
+                          style="
+                            font-size: 12px;
+                            color: #9d9da3;
+                            margin-bottom: 4px;
+                          "
+                        >
+                          Actual Market Value
+                        </div>
+                        <div
+                          style="
+                            font-family: Archivo, sans-serif;
+                            font-weight: 800;
+                            font-size: 32px;
+                            color: #f2f1ee;
+                          "
+                        >
+                          {{ detail.valueFmt }}
+                        </div>
+                      </div>
+                      <div>
+                        <div
+                          style="
+                            font-size: 12px;
+                            color: #9d9da3;
+                            margin-bottom: 4px;
+                          "
+                        >
+                          Model Predicted Value
+                        </div>
+                        <div
+                          style="
+                            font-family: Archivo, sans-serif;
+                            font-weight: 800;
+                            font-size: 32px;
+                            color: #ff6452;
+                          "
+                        >
+                          {{ detail.predictedFmt }}
+                        </div>
+                      </div>
+                      <div>
+                        <div
+                          style="
+                            font-size: 12px;
+                            color: #9d9da3;
+                            margin-bottom: 4px;
+                          "
+                        >
+                          Delta
+                        </div>
+                        <div
+                          style="font-family:Archivo,sans-serif;font-weight:700;font-size:32px;color:{{ detail.deltaColor }};"
+                        >
+                          {{ detail.deltaFmt }}
+                        </div>
+                      </div>
+                    </div>
+                    <div
+                      style="display: flex; flex-direction: column; gap: 8px"
+                    >
+                      <div
+                        style="display: flex; align-items: center; gap: 10px"
+                      >
+                        <div
+                          style="width: 80px; font-size: 12px; color: #9d9da3"
+                        >
+                          Actual
+                        </div>
+                        <div
+                          style="
+                            flex: 1;
+                            height: 12px;
+                            background: #1c1c20;
+                            border-radius: 6px;
+                            overflow: hidden;
+                          "
+                        >
+                          <div
+                            style="height:100%;width:{{ detail.actualBarPct }}%;background:#7a7a80;border-radius:6px;"
+                          ></div>
+                        </div>
+                      </div>
+                      <div
+                        style="display: flex; align-items: center; gap: 10px"
+                      >
+                        <div
+                          style="width: 80px; font-size: 12px; color: #9d9da3"
+                        >
+                          Predicted
+                        </div>
+                        <div
+                          style="
+                            flex: 1;
+                            height: 12px;
+                            background: #1c1c20;
+                            border-radius: 6px;
+                            overflow: hidden;
+                          "
+                        >
+                          <div
+                            style="height:100%;width:{{ detail.predictedBarPct }}%;background:#ff6452;border-radius:6px;"
+                          ></div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if
+                value="{{ showDetailNoSeason }}"
+                hint-placeholder-val="{{ false }}"
+              >
+                <div
+                  style="
+                    text-align: center;
+                    padding: 80px 20px;
+                    border: 1px solid #26262a;
+                    border-radius: 10px;
+                    background: #111113;
+                  "
+                >
+                  <div
+                    style="
+                      font-family: Archivo, sans-serif;
+                      font-weight: 700;
+                      font-size: 18px;
+                      margin-bottom: 8px;
+                    "
+                  >
+                    No data for this season
+                  </div>
+                  <div
+                    style="color: #9d9da3; font-size: 14px; margin-bottom: 18px"
+                  >
+                    {{ detailNoSeasonName }} has no recorded data for {{
+                    detailSeasonLabel }} yet.
+                  </div>
+                  <select
+                    value="{{ detailSeason }}"
+                    onChange="{{ onDetailSeasonChange }}"
+                    style="
+                      background: #17171a;
+                      border: 1px solid #2b2b30;
+                      border-radius: 6px;
+                      color: #f2f1ee;
+                      padding: 8px 12px;
+                      font-size: 14px;
+                      font-family: &quot;Public Sans&quot;, sans-serif;
+                    "
+                  >
+                    <sc-for
+                      list="{{ seasonOptions }}"
+                      as="opt"
+                      hint-placeholder-count="5"
+                    >
+                      <option value="{{ opt.value }}">{{ opt.label }}</option>
+                    </sc-for>
+                  </select>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isNotFound }}" hint-placeholder-val="{{ false }}">
+            <div style="text-align: center; padding: 100px 20px">
+              <div
+                style="
+                  font-family: Archivo, sans-serif;
+                  font-weight: 800;
+                  font-size: 22px;
+                  margin-bottom: 10px;
+                "
+              >
+                Player Not Found
+              </div>
+              <div
+                style="
+                  color: #9d9da3;
+                  font-size: 15px;
+                  max-width: 440px;
+                  margin: 0 auto 22px;
+                  line-height: 1.5;
+                "
+              >
+                We couldn't find a player named "{{ notFoundName }}".
+                Double-check the spelling and try again.
+              </div>
+              <div
+                onClick="{{ goToDirectory }}"
+                style="
+                  display: inline-block;
+                  background: #ff6452;
+                  color: #0b0b0c;
+                  font-weight: 700;
+                  font-size: 14px;
+                  padding: 11px 22px;
+                  border-radius: 7px;
+                  cursor: pointer;
+                "
+              >
+                Back to Directory
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isPredict }}" hint-placeholder-val="{{ false }}">
+            <div style="max-width: 640px; margin: 0 auto">
+              <div
+                style="
+                  font-family: Archivo, sans-serif;
+                  font-weight: 800;
+                  font-size: 28px;
+                  letter-spacing: -0.01em;
+                  margin-bottom: 6px;
+                "
+              >
+                Predict Transfer Value
+              </div>
+              <div style="color: #9d9da3; font-size: 14px; margin-bottom: 26px">
+                Enter performance stats to estimate a market value.
+              </div>
+
+              <div
+                style="
+                  background: #111113;
+                  border: 1px solid #26262a;
+                  border-radius: 12px;
+                  padding: 24px;
+                  display: flex;
+                  flex-direction: column;
+                  gap: 16px;
+                "
+              >
+                <div
+                  style="
+                    display: grid;
+                    grid-template-columns: 1fr 1fr;
+                    gap: 14px;
+                  "
+                >
+                  <div>
+                    <div
+                      style="
+                        font-size: 12px;
+                        color: #9d9da3;
+                        margin-bottom: 6px;
+                      "
+                    >
+                      Goals *
+                    </div>
+                    <input
+                      type="number"
+                      value="{{ form.goals }}"
+                      onChange="{{ onFormChange_goals }}"
+                      style="width:100%;background:#17171a;border:1px solid {{ formBorder.goals }};border-radius:6px;color:#f2f1ee;padding:9px 12px;font-size:14px;font-family:'Public Sans',sans-serif;"
+                    />
+                    <sc-if
+                      value="{{ formErrors.goals }}"
+                      hint-placeholder-val="{{ false }}"
+                      ><div
+                        style="color: #ff6452; font-size: 11px; margin-top: 4px"
+                      >
+                        {{ formErrors.goals }}
+                      </div></sc-if
+                    >
+                  </div>
+                  <div>
+                    <div
+                      style="
+                        font-size: 12px;
+                        color: #9d9da3;
+                        margin-bottom: 6px;
+                      "
+                    >
+                      Assists *
+                    </div>
+                    <input
+                      type="number"
+                      value="{{ form.assists }}"
+                      onChange="{{ onFormChange_assists }}"
+                      style="width:100%;background:#17171a;border:1px solid {{ formBorder.assists }};border-radius:6px;color:#f2f1ee;padding:9px 12px;font-size:14px;font-family:'Public Sans',sans-serif;"
+                    />
+                    <sc-if
+                      value="{{ formErrors.assists }}"
+                      hint-placeholder-val="{{ false }}"
+                      ><div
+                        style="color: #ff6452; font-size: 11px; margin-top: 4px"
+                      >
+                        {{ formErrors.assists }}
+                      </div></sc-if
+                    >
+                  </div>
+                  <div>
+                    <div
+                      style="
+                        font-size: 12px;
+                        color: #9d9da3;
+                        margin-bottom: 6px;
+                      "
+                    >
+                      Age *
+                    </div>
+                    <input
+                      type="number"
+                      value="{{ form.age }}"
+                      onChange="{{ onFormChange_age }}"
+                      style="width:100%;background:#17171a;border:1px solid {{ formBorder.age }};border-radius:6px;color:#f2f1ee;padding:9px 12px;font-size:14px;font-family:'Public Sans',sans-serif;"
+                    />
+                    <sc-if
+                      value="{{ formErrors.age }}"
+                      hint-placeholder-val="{{ false }}"
+                      ><div
+                        style="color: #ff6452; font-size: 11px; margin-top: 4px"
+                      >
+                        {{ formErrors.age }}
+                      </div></sc-if
+                    >
+                  </div>
+                  <div>
+                    <div
+                      style="
+                        font-size: 12px;
+                        color: #9d9da3;
+                        margin-bottom: 6px;
+                      "
+                    >
+                      Minutes Played *
+                    </div>
+                    <input
+                      type="number"
+                      value="{{ form.minutes_played }}"
+                      onChange="{{ onFormChange_minutes_played }}"
+                      style="width:100%;background:#17171a;border:1px solid {{ formBorder.minutes_played }};border-radius:6px;color:#f2f1ee;padding:9px 12px;font-size:14px;font-family:'Public Sans',sans-serif;"
+                    />
+                    <sc-if
+                      value="{{ formErrors.minutes_played }}"
+                      hint-placeholder-val="{{ false }}"
+                      ><div
+                        style="color: #ff6452; font-size: 11px; margin-top: 4px"
+                      >
+                        {{ formErrors.minutes_played }}
+                      </div></sc-if
+                    >
+                  </div>
+                  <div>
+                    <div
+                      style="
+                        font-size: 12px;
+                        color: #9d9da3;
+                        margin-bottom: 6px;
+                      "
+                    >
+                      Position *
+                    </div>
+                    <select
+                      value="{{ form.position_group }}"
+                      onChange="{{ onFormChange_position_group }}"
+                      style="width:100%;background:#17171a;border:1px solid {{ formBorder.position_group }};border-radius:6px;color:#f2f1ee;padding:9px 12px;font-size:14px;font-family:'Public Sans',sans-serif;"
+                    >
+                      <option value="GK">GK</option>
+                      <option value="DEF">DEF</option>
+                      <option value="MID">MID</option>
+                      <option value="FWD">FWD</option>
+                    </select>
+                  </div>
+                  <div>
+                    <div
+                      style="
+                        font-size: 12px;
+                        color: #9d9da3;
+                        margin-bottom: 6px;
+                      "
+                    >
+                      Minutes Share (%)
+                    </div>
+                    <input
+                      type="number"
+                      min="0"
+                      max="100"
+                      value="{{ form.minutes_share }}"
+                      onChange="{{ onFormChange_minutes_share }}"
+                      style="width:100%;background:#17171a;border:1px solid {{ formBorder.minutes_share }};border-radius:6px;color:#f2f1ee;padding:9px 12px;font-size:14px;font-family:'Public Sans',sans-serif;"
+                    />
+                    <sc-if
+                      value="{{ formErrors.minutes_share }}"
+                      hint-placeholder-val="{{ false }}"
+                      ><div
+                        style="color: #ff6452; font-size: 11px; margin-top: 4px"
+                      >
+                        {{ formErrors.minutes_share }}
+                      </div></sc-if
+                    >
+                  </div>
+                </div>
+
+                <div
+                  onClick="{{ submitPredict }}"
+                  style="
+                    background: #ff6452;
+                    color: #0b0b0c;
+                    font-weight: 700;
+                    font-size: 14px;
+                    padding: 12px 0;
+                    border-radius: 7px;
+                    cursor: pointer;
+                    text-align: center;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 8px;
+                  "
+                >
+                  <sc-if
+                    value="{{ predictLoading }}"
+                    hint-placeholder-val="{{ false }}"
+                  >
+                    <div
+                      class="tvp-spin"
+                      style="
+                        width: 13px;
+                        height: 13px;
+                        border: 2px solid #0b0b0c55;
+                        border-top-color: #0b0b0c;
+                        border-radius: 50%;
+                      "
+                    ></div>
+                  </sc-if>
+                  <div>{{ predictButtonLabel }}</div>
+                </div>
+              </div>
+
+              <sc-if
+                value="{{ predictError }}"
+                hint-placeholder-val="{{ false }}"
+              >
+                <div
+                  style="
+                    margin-top: 18px;
+                    background: #1a1213;
+                    border: 1px solid #4a2222;
+                    border-radius: 10px;
+                    padding: 18px;
+                  "
+                >
+                  <div
+                    style="
+                      font-weight: 700;
+                      font-size: 14px;
+                      color: #ff8a7a;
+                      margin-bottom: 4px;
+                    "
+                  >
+                    Prediction request failed
+                  </div>
+                  <div
+                    style="color: #c9c9cd; font-size: 13px; margin-bottom: 12px"
+                  >
+                    {{ predictError }}
+                  </div>
+                  <div
+                    onClick="{{ submitPredict }}"
+                    style="
+                      display: inline-block;
+                      background: #2a1a1a;
+                      color: #ff8a7a;
+                      font-weight: 600;
+                      font-size: 13px;
+                      padding: 8px 16px;
+                      border-radius: 6px;
+                      cursor: pointer;
+                    "
+                  >
+                    Retry
+                  </div>
+                </div>
+              </sc-if>
+
+              <sc-if
+                value="{{ predictHasResult }}"
+                hint-placeholder-val="{{ false }}"
+              >
+                <div
+                  style="
+                    margin-top: 18px;
+                    background: #111113;
+                    border: 1px solid #26262a;
+                    border-radius: 12px;
+                    padding: 26px;
+                    text-align: center;
+                  "
+                >
+                  <div
+                    style="
+                      font-size: 12px;
+                      color: #9d9da3;
+                      text-transform: uppercase;
+                      letter-spacing: 0.05em;
+                      margin-bottom: 8px;
+                    "
+                  >
+                    Estimated Transfer Value
+                  </div>
+                  <div
+                    style="
+                      font-family: Archivo, sans-serif;
+                      font-weight: 800;
+                      font-size: 44px;
+                      color: #ff6452;
+                    "
+                  >
+                    {{ predictResultFmt }}
+                  </div>
+                </div>
+              </sc-if>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </x-dc>
+    <script type="text/x-dc" data-dc-script></script>
+    <script>
+      // support.js (loaded above) reads this DC script's *inline textContent*
+      // synchronously in boot() - a plain `<script src="./app.js">` would leave
+      // textContent empty and the app would silently fail to register its
+      // Component class. support.js's own boot only fires after the React CDN
+      // scripts resolve (async), so a synchronous same-origin fetch of app.js
+      // here is guaranteed to finish first - not a race. Do not "simplify"
+      // this back into a src= attribute on the tag above; it will break.
+      (function () {
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', './app.js', false);
+        xhr.send(null);
+        if (xhr.status === 200 || xhr.status === 0) {
+          document.querySelector('script[data-dc-script]').textContent = xhr.responseText;
+        } else {
+          console.error('[app] failed to load ./app.js:', xhr.status);
+        }
+      })();
+    </script>
+  </body>
+</html>
